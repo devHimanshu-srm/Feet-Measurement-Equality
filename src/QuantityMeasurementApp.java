@@ -2,30 +2,28 @@ import java.util.Scanner;
 
 public class QuantityMeasurementApp {
 
-    // Method to compare two values in feet
-    public static boolean compareFeet(double value1, double value2) {
-        return Double.compare(value1, value2) == 0;
-    }
-
     public static void main(String[] args) {
 
         Scanner scanner = new Scanner(System.in);
 
         try {
-            System.out.print("Enter first value in feet: ");
-            double feet1 = scanner.nextDouble();
+            System.out.print("Enter value: ");
+            double value = scanner.nextDouble();
 
-            System.out.print("Enter second value in feet: ");
-            double feet2 = scanner.nextDouble();
+            System.out.print("Enter source unit (FEET/INCH/YARD/CM): ");
+            Unit source = Unit.valueOf(scanner.next().toUpperCase());
 
-            if (compareFeet(feet1, feet2)) {
-                System.out.println("Values are equal.");
-            } else {
-                System.out.println("Values are NOT equal.");
-            }
+            System.out.print("Enter target unit (FEET/INCH/YARD/CM): ");
+            Unit target = Unit.valueOf(scanner.next().toUpperCase());
+
+            Quantity q = new Quantity(value, source);
+
+            double result = q.convertTo(target);
+
+            System.out.println("Converted Value: " + result + " " + target);
 
         } catch (Exception e) {
-            System.out.println("Invalid input! Please enter numeric values only.");
+            System.out.println("Invalid input! Check value and units.");
         } finally {
             scanner.close();
         }
