@@ -1,33 +1,20 @@
-import java.util.Scanner;
-
 public class QuantityMeasurementApp {
-
-    // Method to compare two values in feet
-    public static boolean compareFeet(double value1, double value2) {
-        return Double.compare(value1, value2) == 0;
-    }
 
     public static void main(String[] args) {
 
-        Scanner scanner = new Scanner(System.in);
+        Quantity q1 = new Quantity(1, LengthUnit.FEET);
+        Quantity q2 = new Quantity(12, LengthUnit.INCH);
 
-        try {
-            System.out.print("Enter first value in feet: ");
-            double feet1 = scanner.nextDouble();
+        // UC5 Conversion
+        System.out.println("Convert 1 FEET to INCH: " + q1.convertTo(LengthUnit.INCH));
 
-            System.out.print("Enter second value in feet: ");
-            double feet2 = scanner.nextDouble();
+        // UC6 Addition (default unit)
+        System.out.println("Addition (default unit): " + q1.add(q2));
 
-            if (compareFeet(feet1, feet2)) {
-                System.out.println("Values are equal.");
-            } else {
-                System.out.println("Values are NOT equal.");
-            }
+        // UC7 Addition (target unit)
+        System.out.println("Addition (YARD): " + q1.add(q2, LengthUnit.YARD));
 
-        } catch (Exception e) {
-            System.out.println("Invalid input! Please enter numeric values only.");
-        } finally {
-            scanner.close();
-        }
+        // Equality
+        System.out.println("Are equal? " + q1.equals(q2));
     }
 }
