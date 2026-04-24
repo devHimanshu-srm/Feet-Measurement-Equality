@@ -1,48 +1,45 @@
 public class Quantity {
 
     private double value;
-    private Unit unit;
+    private LengthUnit unit;
 
-    public Quantity(double value, Unit unit) {
+    public Quantity(double value, LengthUnit unit) {
+        if (unit == null || !Double.isFinite(value)) {
+            throw new IllegalArgumentException("Invalid input");
+        }
         this.value = value;
         this.unit = unit;
     }
 
-    // Convert to another unit (from UC5)
-    public double convertTo(Unit targetUnit) {
-        if (unit == null || targetUnit == null) {
-            throw new IllegalArgumentException("Unit cannot be null");
-        }
-
-        if (!Double.isFinite(value)) {
-            throw new IllegalArgumentException("Invalid numeric value");
-        }
-
-        double valueInFeet = unit.toFeet(value);
-        return targetUnit.fromFeet(valueInFeet);
+    // Convert to target unit
+    public double convertTo(LengthUnit targetUnit) {
+        double base = unit.toBase(value);
+        return targetUnit.fromBase(base);
     }
 
-    // ✅ UC6: Add two quantities
+    // Equality
+    public boolean equals(Quantity other) {
+        double thisBase = this.unit.toBase(this.value);
+        double otherBase = other.unit.toBase(other.value);
+        return Double.compare(thisBase, otherBase) == 0;
+    }
+
+    // UC6: Add (result in first unit)
     public Quantity add(Quantity other) {
-        if (other == null || other.unit == null) {
-            throw new IllegalArgumentException("Invalid quantity");
-        }
+        double sumBase = this.unit.toBase(this.value) +
+                other.unit.toBase(other.value);
 
-        if (!Double.isFinite(this.value) || !Double.isFinite(other.value)) {
-            throw new IllegalArgumentException("Invalid numeric value");
-        }
+        double result = this.unit.fromBase(sumBase);
+        return new Quantity(result, this.unit);
+    }
 
-        // Step 1: convert both to base (feet)
-        double thisInFeet = this.unit.toFeet(this.value);
-        double otherInFeet = other.unit.toFeet(other.value);
+    // UC7: Add with target unit
+    public Quantity add(Quantity other, LengthUnit targetUnit) {
+        double sumBase = this.unit.toBase(this.value) +
+                other.unit.toBase(other.value);
 
-        // Step 2: add
-        double sumInFeet = thisInFeet + otherInFeet;
-
-        // Step 3: convert back to unit of first operand
-        double resultValue = this.unit.fromFeet(sumInFeet);
-
-        return new Quantity(resultValue, this.unit);
+        double result = targetUnit.fromBase(sumBase);
+        return new Quantity(result, targetUnit);
     }
 
     @Override
