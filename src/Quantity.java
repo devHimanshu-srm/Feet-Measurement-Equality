@@ -44,6 +44,29 @@ public class Quantity {
 
         return new Quantity(resultValue, this.unit);
     }
+    //  UC7: Add with target unit
+    public Quantity add(Quantity other, Unit targetUnit) {
+
+        if (other == null || targetUnit == null) {
+            throw new IllegalArgumentException("Invalid input");
+        }
+
+        if (!Double.isFinite(this.value) || !Double.isFinite(other.value)) {
+            throw new IllegalArgumentException("Invalid numeric value");
+        }
+
+        // Step 1: convert both to FEET
+        double thisInFeet = this.unit.toFeet(this.value);
+        double otherInFeet = other.unit.toFeet(other.value);
+
+        // Step 2: add
+        double sumInFeet = thisInFeet + otherInFeet;
+
+        // Step 3: convert to target unit
+        double resultValue = targetUnit.fromFeet(sumInFeet);
+
+        return new Quantity(resultValue, targetUnit);
+    }
 
     @Override
     public String toString() {
